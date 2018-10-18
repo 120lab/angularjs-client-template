@@ -27,11 +27,16 @@
                         <h3>Product : {{product.Description}}</h3>
                         <h4>Price : {{product.Value}} MAN</h4>
                         <p>Upload to site : {{product.Created_date}}</p>
+                        <!-- <p>Status : {{status}}</p> -->
                     </div>
 
                     <div class="md-list-item-text">
+                        <md-input-container>
+                            <label>Amount</label>
+                            <input type="text" ng-model="Amount" required min="0" max="30">
+                        </md-input-container>
                         <!-- button for creating product -->
-                        <md-button class="md-raised" ng-click="showCreateOrderForm(" + {{product._id}} + ")">Order</md-button>
+                        <md-button class="md-raised" ng-click="showConfirm(product.Description,product._id, product.Value ,Amount)">Order</md-button>
                     </div>
 
                     <!-- 'read one', 'edit' and 'delete' buttons -->
