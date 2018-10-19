@@ -62,13 +62,13 @@ app.controller('productsController', function ($scope, $mdDialog, $mdToast, prod
                 $scope.showToast("Order fail, process discard.");
             });
 
-            productsFactory.CreateFee(SellerId, CustomerId, Value * 100000000000000000 * Amount * 0.05).then(function successCallback(response) {
+            productsFactory.CreateFee(SellerId, CustomerId, Value * Amount * 0.05).then(function successCallback(response) {
 
                 console.log(response.data);
                 $scope.showToast("Fee done");
 
                 // Pay for the purchase
-                productsFactory.PayNow(Value * 100000000000000000 * Amount * 0.05, "Fee").then(function successCallback(response) {
+                productsFactory.PayNow(Value * Amount * 0.05, "Fee").then(function successCallback(response) {
 
                     console.log(response.data);
                     $scope.showToast("Fee money transferred");
