@@ -31,7 +31,7 @@ app.controller('productsController', function ($scope, $mdDialog, $mdToast, prod
                 "</br><b>Identify :</b> " + Id +
                 "</br><b>Price :</b> " + Value +
                 "</br><b>Amount :</b> " + Amount +
-                "</br><b>Total pay:</b> " + Number(Value) * Number(Amount))
+                "</br><b>Total pay:</b> " + parseFloat(Value) * parseFloat(Amount))
             .ariaLabel('Lucky day')
             .targetEvent()
             .ok('Pay Now')
@@ -40,25 +40,47 @@ app.controller('productsController', function ($scope, $mdDialog, $mdToast, prod
         $mdDialog.show(confirm).then(function () {
             $scope.status = 'Order Confirmed.';
 
-            productsFactory.CreateOrder(Id, Value, Amount).then(function successCallback(response) {
+            const SellerId = "seller-1";
+            const CustomerId = "customer-2";
+
+            productsFactory.CreateOrder(SellerId, CustomerId, Id, Value, Amount).then(function successCallback(response) {
 
                 console.log(response.data);
                 $scope.showToast("Order done");
 
-                productsFactory.PayNow(Value * Amount).then(function successCallback(response) {
+                // Pay for the purchase
+                productsFactory.PayNow(Value * Amount, "Pay").then(function successCallback(response) {
 
                     console.log(response.data);
                     $scope.showToast("Money transferred");
     
-                    
                 }, function errorCallback(response) {
-                    $scope.showToast("Order fail, process discard.");
+                    $scope.showToast("Payment fail, process discard.");
                 });
 
             }, function errorCallback(response) {
                 $scope.showToast("Order fail, process discard.");
             });
 
+            productsFactory.CreateFee(SellerId, CustomerId, Value * 100000000000000000 * Amount * 0.05).then(function successCallback(response) {
+
+                console.log(response.data);
+                $scope.showToast("Fee done");
+
+                // Pay for the purchase
+                productsFactory.PayNow(Value * 100000000000000000 * Amount * 0.05, "Fee").then(function successCallback(response) {
+
+                    console.log(response.data);
+                    $scope.showToast("Fee money transferred");
+    
+                }, function errorCallback(response) {
+                    $scope.showToast("Fee moeny fail, process discard.");
+                });
+
+            }, function errorCallback(response) {
+                $scope.showToast("Fee fail, process discard.");
+            });
+            
         }, function () {
             $scope.status = 'Order canceled.';
         });
